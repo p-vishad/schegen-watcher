@@ -3,4 +3,4 @@ services:
     name: schengen-watcher
     env: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "python watcher.py"
+    startCommand: "python schegen-watcher.py"
