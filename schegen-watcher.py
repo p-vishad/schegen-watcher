@@ -9,6 +9,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
+
 # === CONFIG ===
 NETHERLANDS_URL = os.environ.get("WATCH_URL", "https://schengenappointments.com/in/london/netherlands/tourism")
 CHECK_INTERVAL = int(os.environ.get("CHECK_INTERVAL", "50")) # seconds
@@ -20,6 +21,7 @@ if not BOT_TOKEN or not CHAT_ID:
     raise ValueError("Missing environment variables! Can't push notifications to phone")
 
 url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
 
 def send_push_to_phone(message):
     payload = {
