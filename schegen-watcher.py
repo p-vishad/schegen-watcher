@@ -63,7 +63,7 @@ def check_netherlands_status():
 if __name__ == "__main__":
     logging.info(f"Monitoring {NETHERLANDS_URL} every {CHECK_INTERVAL} seconds...")
     logging.info("Pushing test message...")
-    # send_push_to_phone("Script up and running...")
+    send_push_to_phone("Script up and running...")
     while True:
         check_netherlands_status()
         time.sleep(CHECK_INTERVAL)
