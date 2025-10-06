@@ -2,7 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import time
+import logging
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
 # === CONFIG ===
 NETHERLANDS_URL = os.environ.get("WATCH_URL", "https://schengenappointments.com/in/london/netherlands/tourism")
 CHECK_INTERVAL = int(os.environ.get("CHECK_INTERVAL", "50")) # seconds
@@ -24,9 +30,9 @@ def send_push_to_phone(message):
     response = requests.post(url, payload)
 
     if response.status_code == 200:
-        print("Message sent successfully!")
+        logging.info("Message sent successfully!")
     else:
-        print("Failed to send message:", response.text)
+        logging.error(f"Failed to send message: {response.text}")
 
 
 def check_netherlands_status():
@@ -34,7 +40,7 @@ def check_netherlands_status():
         response = requests.get(NETHERLANDS_URL, timeout=10)
         response.raise_for_status()
     except Exception as e:
-        print(f"Error fetching page: {e}")
+        logging.error(f"Error fetching page: {e}")
         return None
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -44,20 +50,20 @@ def check_netherlands_status():
     if h5:
         text = h5.get_text(strip=True)
         if "No appointments available" in text:
-            print("Netherlands has no availability.")
+            logging.info("Netherlands has no availability.")
         else:
-            print("Netherlands might be open")
-            print("Pushing notification to phone...")
+            logging.info("Netherlands might be open")
+            logging.info("Pushing notification to phone...")
             send_push_to_phone(message="Neatherland visa application is open")
     else:
         # If <h5> not found, assume page layout changed
-        print("Could not find the appointment status element")
+        logging.warning("Could not find the appointment status element")
 
 
 if __name__ == "__main__":
-    print(f"Monitoring {NETHERLANDS_URL} every {CHECK_INTERVAL} seconds...")
-    print("Pushing test message...")
-    send_push_to_phone("Script up and running...")
+    logging.info(f"Monitoring {NETHERLANDS_URL} every {CHECK_INTERVAL} seconds...")
+    logging.info("Pushing test message...")
+    # send_push_to_phone("Script up and running...")
     while True:
         check_netherlands_status()
         time.sleep(CHECK_INTERVAL)
